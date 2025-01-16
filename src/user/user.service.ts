@@ -34,7 +34,8 @@ export class UserService {
 		return user
 	}
 
-	async toggleFavorites(productId: string, userId: string) {
+	async toggleFavorites(userId: string, productId: string) {
+		console.log('this userId:', userId)
 		const user = await this.getById(userId)
 
 		const isExists = user.favorites.some(
