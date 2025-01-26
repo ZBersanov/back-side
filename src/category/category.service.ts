@@ -48,7 +48,7 @@ export class CategoryService {
 	async delete(id: string) {
 		await this.getById(id)
 
-		return await this.prisma.color.delete({
+		return await this.prisma.category.delete({
 			where: { id }
 		})
 	}
