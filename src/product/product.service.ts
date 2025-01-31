@@ -39,7 +39,11 @@ export class ProductService {
 			include: {
 				category: true,
 				color: true,
-				reviews: true
+				reviews: {
+					include: {
+						user: true
+					}
+				}
 			}
 		})
 
@@ -80,11 +84,15 @@ export class ProductService {
 						}
 					}
 				]
+			},
+			include: {
+				category: true
 			}
 		})
 	}
 
 	async getMostPopular() {
+		// Группируем товары по популярности
 		const mostPopularProducts = await this.prisma.orderItem.groupBy({
 			by: ['productId'],
 			_count: {
@@ -97,8 +105,17 @@ export class ProductService {
 			}
 		})
 
-		const productIds = mostPopularProducts.map(item => item.productId)
+		// Собираем только валидные productId
+		const productIds = mostPopularProducts
+			.map(item => item.productId)
+			.filter(id => id !== null && id !== undefined) // Исключаем null и undefined
 
+		// Если массив пустой, сразу возвращаем пустой результат
+		if (productIds.length === 0) {
+			return []
+		}
+
+		// Получаем продукты по их ID
 		const products = await this.prisma.product.findMany({
 			where: {
 				id: {
@@ -109,6 +126,7 @@ export class ProductService {
 				category: true
 			}
 		})
+
 		return products
 	}
 

@@ -25,7 +25,7 @@ export class CategoryController {
 		return this.categoryService.getByStoreId(storeId)
 	}
 
-	@Auth()
+
 	@HttpCode(200)
 	@Get('by-id/:id')
 	async getById(@Param('id') id: string) {
